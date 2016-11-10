@@ -35,8 +35,6 @@ Instead of using composer, you can also do a manual install using:
 
 ```
 git clone https://github.com/firedtoad/radmin.git
-cd phpRedisAdmin
-git clone https://github.com/nrk/predis.git vendor
 ```
 
 TODO
