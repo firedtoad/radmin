@@ -399,7 +399,6 @@ class RedisCluster implements ClusterConnectionInterface, IteratorAggregate, Cou
     protected function onMovedResponse(CommandInterface $command, $details)
     {
         list($slot, $connectionID) = explode(' ', $details, 2);
-
         if (!$connection = $this->getConnectionById($connectionID)) {
             $connection = $this->createConnection($connectionID);
         }

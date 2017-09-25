@@ -10,7 +10,7 @@ function format_ago($time, $ago = false) {
   $minute = 60;
   $hour   = $minute * 60;
   $day    = $hour   * 24;
-
+ $time=intval($time);
   $when = $time;
 
   if ($when >= 0)
@@ -45,7 +45,7 @@ function format_ago($time, $ago = false) {
 
 function format_size($size) {
   $sizes = array('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
-
+   $size=intval($size);
   if ($size == 0) {
     return '0 B';
   } else {

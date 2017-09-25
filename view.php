@@ -8,7 +8,6 @@ $page['js'][]  = 'frame';
 require 'includes/header.inc.php';
 
 
-
 if (!isset($_GET['key'])) {
   ?>
   Invalid key
@@ -21,6 +20,7 @@ if (!isset($_GET['key'])) {
 
 
 $type   = $redis->type($_GET['key']);
+
 $exists = $redis->exists($_GET['key']);
 
 $count_elements_page = isset($config['count_elements_page']) ? $config['count_elements_page'] : false;
@@ -176,6 +176,7 @@ else if ($type == 'hash') { ?>
             default:
             break;
         }
+        /*
         if($up)
         {
             $upk=unpack($up,$hkey);
@@ -184,6 +185,7 @@ else if ($type == 'hash') { ?>
                $hkey=$upk['key'];   
             }
         }
+        */
     }
     if(is_string($value))
     {
@@ -204,6 +206,7 @@ else if ($type == 'hash') { ?>
             default:
             break;
         }
+        /*
         if($upv)
         {
             $upk=unpack($upv,$value);
@@ -216,9 +219,12 @@ else if ($type == 'hash') { ?>
                }
             }
         }
+        */
     }
+
     ?>
-  <tr <?php echo $alt ? 'class="alt"' : ''?>><td><div><?php echo format_html($hkey, $server['charset'])?></div></td><td><div><?php echo nl2br(format_html($value, $server['charset']))?></div></td><td><div>
+  <tr <?php echo $alt ? 'class="alt"' : ''?>><td><div><?php echo format_html($hkey, $server['charset'])?></div></td><td><div><?php //file_put_contents($hkey,$value);
+  echo nl2br(format_html($value, $server['charset']));?></div></td><td><div>
     <a href="edit.php?s=<?php echo $server['id']?>&amp;type=hash&amp;key=<?php echo urlencode($_GET['key'])?>&amp;hkey=<?php echo urlencode($hkey)?>"><img src="images/edit.png" width="16" height="16" title="Edit" alt="[E]"></a>
   </div></td><td><div>
     <a href="delete.php?s=<?php echo $server['id']?>&amp;type=hash&amp;key=<?php echo urlencode($_GET['key'])?>&amp;hkey=<?php echo urlencode($hkey)?>" class="delval"><img src="images/delete.png" width="16" height="16" title="Delete" alt="[X]"></a>

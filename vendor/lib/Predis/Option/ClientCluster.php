@@ -60,6 +60,7 @@ class ClientCluster extends AbstractOption
      */
     protected function getInitializer(ClientOptionsInterface $options, $fqnOrType)
     {
+
         switch ($fqnOrType) {
             case 'predis':
                 return function () {

@@ -4,8 +4,19 @@ require_once 'includes/common.inc.php';
 
 if($redis) {
 
-    $keys = $redis->keys($server['filter']);
+   // $keys = $redis->scan($server['filter']);
+     $keys=[];
+     $cmdKeys = $redis->createCommand('keys', [$server['filter']]);
 
+    foreach ($redis->getConnection() as $nodeConnection) {
+        $nodeKeys = $nodeConnection->executeCommand($cmdKeys);
+
+        $keys = array_merge($keys, $nodeKeys);
+    }
+    if(empty($server['hosts']))
+    {
+        $keys=$redis->keys($server['filter']);
+    }
     sort($keys);
 
     $namespaces = array(); // Array to hold our top namespaces.
@@ -151,7 +162,7 @@ require 'includes/header.inc.php';
 <p>
 <select id="server">
 <?php foreach ($config['servers'] as $i => $srv) { ?>
-<option value="<?php echo $i?>" <?php echo ($server['id'] == $i) ? 'selected="selected"' : ''?>><?php echo isset($srv['name']) ? format_html($srv['name']) : $srv['host'].':'.$srv['port']?></option>
+<option value="<?php echo $i?>" <?php echo ($server['id'] == $i) ? 'selected="selected"' : ''?>><?php echo isset($srv['name']) ? format_html($srv['name']) : $srv['host'].':'.(!empty($srv['port'])?$srv['port']:'')?></option>
 <?php } ?>
 </select>
 </p>

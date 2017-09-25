@@ -87,12 +87,13 @@ class Client implements ClientInterface
         if ($parameters instanceof ConnectionInterface) {
             return $parameters;
         }
-
+        
         if (is_array($parameters) && isset($parameters[0])) {
             $options = $this->options;
+
             $replication = isset($options->replication) && $options->replication;
             $connection = $options->{$replication ? 'replication' : 'cluster'};
-
+          
             return $options->connections->createAggregated($connection, $parameters);
         }
 

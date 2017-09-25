@@ -13,7 +13,7 @@ foreach ($config['servers'] as $i => $server) {
   }
 
   // Setup a connection to Redis.
-  $redis = !$server['port'] ? new Predis\Client($server['host']) : new Predis\Client('tcp://'.$server['host'].':'.$server['port']);
+  $redis = !isset($server['port'])? new Predis\Client($server['hosts'],$server['options']) : new Predis\Client('tcp://'.$server['host'].':'.$server['port']);
   try {
     $redis->connect();
   } catch (Predis\CommunicationException $exception) {
@@ -34,8 +34,36 @@ foreach ($config['servers'] as $i => $server) {
         }
       }
 
-      $info[$i]         = $redis->info();
-      $info[$i]['size'] = $redis->dbSize();
+     $infoKeys = $redis->createCommand('info', []);
+     $infos=[];
+    foreach ($redis->getConnection() as $nodeConnection) {
+        $nodeKeys = $nodeConnection->executeCommand($infoKeys);
+        // print_r($nodeKeys);
+        $infos[]=$nodeKeys;
+    }
+    // echo $i;
+    // print_r($infos);
+
+      if(!empty($server['hosts']))
+      {
+
+        $mc=[];
+        preg_match_all('/(.*?):(.*)\n/',$infos[$i],$mc);
+        $result=array_combine($mc[1],$mc[2]);
+        foreach ($result as $kr=>&$vr)
+        {
+          if(is_numeric($vr))
+          {
+            $vr=intval($vr);
+          }
+        }
+         $info[$i]         = $result;
+         $info[$i]['size'] = 1;
+       }else{
+          $info[$i]=$redis->info();
+          $info[$i]['size']=$redis->dbsize();
+       }
+     
 
       if (!isset($info[$i]['Server'])) {
         $info[$i]['Server'] = array(

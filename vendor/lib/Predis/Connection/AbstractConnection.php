@@ -138,6 +138,7 @@ abstract class AbstractConnection implements SingleConnectionInterface
      */
     protected function onConnectionError($message, $code = null)
     {
+       
         CommunicationException::handle(new ConnectionException($this, "$message [{$this->parameters->scheme}://{$this->getIdentifier()}]", $code));
     }
 
